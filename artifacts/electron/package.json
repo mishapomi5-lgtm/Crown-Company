@@ -1,0 +1,20 @@
+{
+  "name": "@workspace/electron",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "node ./build.mjs",
+    "dev": "pnpm run build && concurrently --kill-others-on-fail --kill-others -n api,vite,electron --prefix-colors cyan,magenta,yellow \"PORT=8080 pnpm --filter @workspace/api-server run dev\" \"PORT=5173 BASE_PATH=/ pnpm --filter @workspace/ledger run dev\" \"wait-on http://localhost:8080/api/healthz http://localhost:5173 && ELECTRON_DEV=true electron ./dist/main.js\"",
+    "build:all": "pnpm run build && PORT=5173 BASE_PATH=/ pnpm --filter @workspace/ledger run build && pnpm --filter @workspace/api-server run build",
+    "dist:win": "pnpm run build:all && electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "concurrently": "^8.2.2",
+    "electron": "^35.0.0",
+    "esbuild": "0.27.3",
+    "typescript": "~5.9.3",
+    "wait-on": "^8.0.3"
+  }
+}

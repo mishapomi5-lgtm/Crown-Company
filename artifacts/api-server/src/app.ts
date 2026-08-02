@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import path from "node:path";
 import router from "./routes";
 import { logger } from "./lib/logger";
 // Initialize SQLite database on startup (creates tables + seeds partners)
@@ -36,5 +37,21 @@ app.use("/api", router);
 
 // Start auto-backup scheduler (reads persisted settings)
 initBackupScheduler();
+
+// ── Electron production: serve the built React frontend ────────────────────
+// When ELECTRON_STATIC_DIR is set (by the Electron main process), Express
+// also serves the compiled frontend so the Electron window can load
+// http://localhost:<PORT>/ and reach both the API and the SPA from one origin.
+// This has no effect in normal dev/browser mode.
+const electronStaticDir = process.env.ELECTRON_STATIC_DIR;
+if (electronStaticDir) {
+  const staticRoot = path.resolve(electronStaticDir);
+  app.use(express.static(staticRoot));
+  // SPA fallback: any unmatched route returns index.html for client-side routing.
+  app.use((_req, res) => {
+    res.sendFile(path.join(staticRoot, "index.html"));
+  });
+  logger.info({ staticRoot }, "Serving frontend static files (Electron production mode)");
+}
 
 export default app;

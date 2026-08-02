@@ -1,0 +1,80 @@
+# ────────────────────────────────────────────────────────────────────────────
+# electron-builder configuration for Crown King Ledger
+# ────────────────────────────────────────────────────────────────────────────
+appId: com.crownking.ledger
+productName: "Crown King Ledger"
+copyright: "Copyright © 2026 Crown King"
+
+# ── Output directory (relative to artifacts/electron/) ──────────────────────
+directories:
+  output: dist-win
+  buildResources: build-resources
+
+# ── What goes into the asar app bundle ──────────────────────────────────────
+# Only the compiled Electron main/preload scripts are bundled into the app.
+# The API server and frontend are placed in extraResources (outside the asar)
+# so that Node.js can load native modules and files from them at runtime.
+files:
+  - dist/main.js
+  - dist/main.js.map
+  - dist/preload.js
+  - dist/preload.js.map
+  - package.json
+
+# ── Extra resources (accessible via process.resourcesPath at runtime) ────────
+# Layout inside resources/:
+#   api-server/dist/index.mjs   — bundled Express server
+#   api-server/node_modules/    — native modules (better-sqlite3, etc.)
+#   ledger/dist/public/         — built React frontend
+extraResources:
+  - from: "../api-server/dist"
+    to: "api-server/dist"
+    filter: ["**/*"]
+  - from: "../api-server/node_modules/better-sqlite3"
+    to: "api-server/node_modules/better-sqlite3"
+    filter: ["**/*"]
+  - from: "../api-server/node_modules/pino"
+    to: "api-server/node_modules/pino"
+    filter: ["**/*"]
+  - from: "../api-server/node_modules/pino-pretty"
+    to: "api-server/node_modules/pino-pretty"
+    filter: ["**/*"]
+  - from: "../api-server/node_modules/thread-stream"
+    to: "api-server/node_modules/thread-stream"
+    filter: ["**/*"]
+  - from: "../ledger/dist/public"
+    to: "ledger/dist/public"
+    filter: ["**/*"]
+
+# ── Windows target ───────────────────────────────────────────────────────────
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  # Place your 256×256 icon at artifacts/electron/build-resources/icon.ico
+  # icon: build-resources/icon.ico
+
+# ── NSIS installer options ───────────────────────────────────────────────────
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Crown King Ledger"
+  installerIcon: null
+  uninstallerIcon: null
+
+# ── Native module rebuild ────────────────────────────────────────────────────
+# better-sqlite3 is a native module; electron-builder will rebuild it for the
+# target Electron version using the prebuilt binaries provided by better-sqlite3
+# (downloaded via node-pre-gyp). Setting buildDependenciesFromSource: false
+# tells electron-builder to prefer prebuilt binaries over compiling from source.
+npmRebuild: true
+buildDependenciesFromSource: false
+
+# NOTE: Cross-compiling native modules (better-sqlite3) from Linux to Windows
+# requires either Wine + the Windows Node.js headers, or running the Windows
+# build on a Windows machine. For the Linux→Windows path, electron-builder
+# will try to download the prebuilt .node binary from GitHub releases.
+# If that download fails, run the build on a Windows machine instead.

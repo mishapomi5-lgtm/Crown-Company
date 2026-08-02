@@ -72,6 +72,15 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    // Proxy /api requests to the Express API server in dev mode.
+    // This lets the Vite dev server (and Electron loading it) reach the API
+    // without depending on an upstream reverse proxy.
+    proxy: {
+      '/api': {
+        target: `http://localhost:${process.env.API_PORT ?? '8080'}`,
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port,
