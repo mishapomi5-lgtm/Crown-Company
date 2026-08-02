@@ -1,7 +1,0 @@
-{
-  "autoBackupEnabled": true,
-  "autoBackupSchedule": "daily",
-  "backupFolder": "/home/runner/workspace/artifacts/api-server/data/backups",
-  "maxBackupHistory": 5,
-  "lastAutoBackup": null
-}

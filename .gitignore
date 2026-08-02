@@ -51,3 +51,11 @@ Thumbs.db
 # SQLite WAL/SHM journal files (transient, should not be committed)
 *.db-wal
 *.db-shm
+
+# SQLite runtime data (live database, backups, settings — user data, not source)
+artifacts/api-server/data/*.db
+artifacts/api-server/data/backups/
+artifacts/api-server/data/backup-settings.json
+
+# Electron installer output
+artifacts/electron/dist-win/
