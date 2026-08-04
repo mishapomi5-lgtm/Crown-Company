@@ -65,6 +65,16 @@ nsis:
   # installerIcon: build-resources/icon.ico   ← uncomment and add icon to use a custom installer icon
   # uninstallerIcon: build-resources/icon.ico ← uncomment and add icon to use a custom uninstaller icon
 
+# ── Toolset versions ─────────────────────────────────────────────────────────
+# electron-builder 26.x defaults to NSIS 3.0.4.1 (2017) when toolsets.nsis is
+# absent. That legacy binary crashes with STATUS_ACCESS_VIOLATION (0xC0000005)
+# on Windows 10/11 and Server 2019+. Setting "1.2.1" downloads the
+# nsis-bundle-3.12.tar.gz toolset which ships NSIS 3.12 (2023) and its
+# matching plugin bundle — both getMakeNsisPath and getNsisPluginsPath honour
+# this key, so the upgrade is complete with one line.
+toolsets:
+  nsis: "1.2.1"
+
 # ── Native module rebuild ────────────────────────────────────────────────────
 # better-sqlite3 is a native module; electron-builder will rebuild it for the
 # target Electron version using the prebuilt binaries provided by better-sqlite3
