@@ -1,0 +1,62 @@
+diff --git a/dist/NtExecutableResource.js b/dist/NtExecutableResource.js
+index b3367d6956562a2cb3dfb5c9e6ee3d85fb705e1b..488a07954ff1247acddadfca73d1d36e50447a9f 100644
+--- a/dist/NtExecutableResource.js
++++ b/dist/NtExecutableResource.js
+@@ -423,23 +423,9 @@ var NtExecutableResource = /** @class */ (function () {
+             .concat(exe.getAllSections())
+             .sort(function (a, b) { return a.info.virtualAddress - b.info.virtualAddress; });
+         var entry = exe.getSectionByEntry(ImageDirectoryEntry_js_1.default.Resource);
+-        // check if the section order is supported
+-        // (not supported if any other sections except 'relocation' is available,
+-        // because the recalculation of virtual address is not simple)
+-        if (entry) {
+-            var reloc = exe.getSectionByEntry(ImageDirectoryEntry_js_1.default.BaseRelocation);
+-            for (var i = 0; i < secs.length; ++i) {
+-                var s = secs[i];
+-                if (s === entry) {
+-                    for (var j = i + 1; j < secs.length; ++j) {
+-                        if (!reloc || secs[j] !== reloc) {
+-                            throw new Error('After Resource section, sections except for relocation are not supported');
+-                        }
+-                    }
+-                    break;
+-                }
+-            }
+-        }
++        // Section-order check removed: Electron 35+ (Clang/LLVM, Windows x64)
++        // places .pdata (x64 SEH unwind tables) after .rsrc, which this check
++        // previously rejected. pe-library 0.5+ dropped the restriction; we replicate that here.
+         var r = new NtExecutableResource();
+         r.sectionDataHeader = entry ? functions_js_1.cloneObject(entry.info) : null;
+         if (entry) {
+diff --git a/dist/_esm/NtExecutableResource.js b/dist/_esm/NtExecutableResource.js
+index 4471de3ced01c1eb9902f9af95d8a253c1193806..0bddef6c5218bac8511b3b59e575ce34542e435f 100644
+--- a/dist/_esm/NtExecutableResource.js
++++ b/dist/_esm/NtExecutableResource.js
+@@ -421,23 +421,9 @@ var NtExecutableResource = /** @class */ (function () {
+             .concat(exe.getAllSections())
+             .sort(function (a, b) { return a.info.virtualAddress - b.info.virtualAddress; });
+         var entry = exe.getSectionByEntry(ImageDirectoryEntry.Resource);
+-        // check if the section order is supported
+-        // (not supported if any other sections except 'relocation' is available,
+-        // because the recalculation of virtual address is not simple)
+-        if (entry) {
+-            var reloc = exe.getSectionByEntry(ImageDirectoryEntry.BaseRelocation);
+-            for (var i = 0; i < secs.length; ++i) {
+-                var s = secs[i];
+-                if (s === entry) {
+-                    for (var j = i + 1; j < secs.length; ++j) {
+-                        if (!reloc || secs[j] !== reloc) {
+-                            throw new Error('After Resource section, sections except for relocation are not supported');
+-                        }
+-                    }
+-                    break;
+-                }
+-            }
+-        }
++        // Section-order check removed: Electron 35+ (Clang/LLVM, Windows x64)
++        // places .pdata (x64 SEH unwind tables) after .rsrc, which this check
++        // previously rejected. pe-library 0.5+ dropped the restriction; we replicate that here.
+         var r = new NtExecutableResource();
+         r.sectionDataHeader = entry ? cloneObject(entry.info) : null;
+         if (entry) {
