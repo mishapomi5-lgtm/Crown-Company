@@ -62,8 +62,8 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: "Crown King Ledger"
-  installerIcon: null
-  uninstallerIcon: null
+  # installerIcon: build-resources/icon.ico   ← uncomment and add icon to use a custom installer icon
+  # uninstallerIcon: build-resources/icon.ico ← uncomment and add icon to use a custom uninstaller icon
 
 # ── Native module rebuild ────────────────────────────────────────────────────
 # better-sqlite3 is a native module; electron-builder will rebuild it for the

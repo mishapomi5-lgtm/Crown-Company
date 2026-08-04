@@ -1,0 +1,85 @@
+Act as a senior Electron, PNPM, Node.js, and Windows build engineer.
+
+Your task is NOT to make random code changes.
+
+Current situation:
+
+- The application builds successfully.
+- Vite completes successfully.
+- Electron app is packaged successfully.
+- The build only fails at the NSIS installer stage.
+
+Current error:
+
+ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+
+makensis.exe process failed
+
+Build log shows:
+
+electron-builder version 26.15.3
+
+C:\Users\DELL\AppData\Local\electron-builder\Cache\nsis-3.0.4.1\Bin\makensis.exe process failed
+
+The project already has the previous Windows compatibility fixes:
+- cross-env added
+- Windows optional dependencies fixed
+- pnpm lock regenerated
+- Tailwind oxide Windows binding included
+- electron-builder runs correctly until NSIS execution
+
+Your job:
+
+1. Determine the REAL root cause.
+2. Do NOT guess.
+3. Do NOT modify unrelated files.
+4. Do NOT rewrite configuration unless it is proven necessary.
+
+Investigate all of the following:
+
+- electron-builder.yml
+- package.json
+- artifacts/electron/package.json
+- NSIS configuration
+- custom nsis scripts
+- build scripts
+- electron-builder version compatibility
+- Windows signing configuration
+- installer configuration
+- compression settings
+- output paths
+- executable permissions
+- any invalid electron-builder options
+
+Determine whether this is:
+
+A. Project configuration issue
+
+B. electron-builder bug
+
+C. NSIS configuration issue
+
+D. Windows environment issue
+
+E. Antivirus/Windows Defender blocking makensis.exe
+
+F. Corrupted NSIS cache
+
+If the problem is NOT inside the repository, clearly state:
+
+"This is not a repository issue. No code changes are required."
+
+If code changes ARE required:
+
+- explain WHY
+- explain HOW they fix the problem
+- modify ONLY the necessary files
+
+Do NOT touch unrelated files.
+
+Finally provide:
+
+1. Root cause
+2. Files changed
+3. Exact reason for every change
+4. Whether the issue is inside the repository or only on the local Windows machine.
